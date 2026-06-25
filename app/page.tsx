@@ -139,11 +139,11 @@ export default function LandingPage() {
                     <span className="h-3 w-3 rounded-full bg-yellow-500/80"></span>
                     <span className="h-3 w-3 rounded-full bg-green-500/80"></span>
                   </div>
-                  <span className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Live Tone Preview</span>
+                  <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest font-mono">Mail Client Preview</span>
                 </div>
 
                 {/* Tone Selectors */}
-                <div className="flex gap-2 mb-4 bg-zinc-900/80 p-1 rounded-xl border border-zinc-800/80">
+                <div className="flex gap-2 mb-4 bg-zinc-900/80 p-1 rounded-xl border border-zinc-850">
                   {TONES_DEMO.map((tone, idx) => (
                     <button
                       key={tone.name}
@@ -160,22 +160,42 @@ export default function LandingPage() {
                 </div>
 
                 {/* Simulated Input Prompt */}
-                <div className="mb-4">
-                  <div className="text-xs text-zinc-500 mb-1.5 font-medium">Input Prompt:</div>
-                  <div className="bg-zinc-900/40 border border-zinc-900 px-3 py-2 rounded-xl text-xs text-zinc-300">
+                <div className="mb-4 text-xs space-y-1.5">
+                  <div className="text-[10px] text-zinc-500 font-semibold uppercase">Input Prompt:</div>
+                  <div className="bg-zinc-900/40 border border-zinc-900 px-3 py-2 rounded-xl text-zinc-300">
                     "Ask Alexander for a status update on our deliverables..."
                   </div>
                 </div>
 
-                {/* Output Screen */}
-                <div>
-                  <div className="text-xs text-zinc-500 mb-1.5 font-medium flex justify-between">
+                {/* Output Screen (Gmail-like) */}
+                <div className="space-y-2.5 text-xs">
+                  <div className="text-[10px] text-zinc-500 font-semibold uppercase flex justify-between">
                     <span>Generated Draft:</span>
-                    <span className="text-violet-400 text-[10px] animate-pulse">AI is typing...</span>
+                    <span className="text-violet-400 animate-pulse">AI is typing...</span>
                   </div>
-                  <div className="bg-zinc-950 border border-zinc-900 p-4 rounded-xl text-xs font-mono h-44 overflow-y-auto text-zinc-200 whitespace-pre-wrap leading-relaxed relative">
-                    {demoText}
-                    <span className="inline-block w-1.5 h-3.5 bg-violet-500 ml-0.5 animate-ping"></span>
+
+                  <div className="bg-zinc-950 border border-zinc-900 rounded-2xl p-4 space-y-3 shadow-inner">
+                    <div className="space-y-1.5 border-b border-zinc-900/60 pb-3">
+                      <div className="flex items-center gap-2 text-zinc-500">
+                        <span className="w-12">From:</span>
+                        <span className="bg-zinc-900/60 border border-zinc-850 px-2 py-0.5 rounded text-[10px] text-zinc-300 font-mono">you@vibemail.ai</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-zinc-500">
+                        <span className="w-12">To:</span>
+                        <span className="bg-zinc-900/60 border border-zinc-850 px-2 py-0.5 rounded text-[10px] text-zinc-300 font-mono">alex@example.com</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-zinc-500">
+                        <span className="w-12">Subject:</span>
+                        <span className="font-semibold text-zinc-300 text-[10px]">Status Update: Project Deliverables</span>
+                      </div>
+                    </div>
+                    
+                    <div className="text-xs text-zinc-200 whitespace-pre-wrap leading-relaxed h-36 overflow-y-auto pr-1">
+                      {demoText}
+                      {typingIndex < TONES_DEMO[activeToneIndex].text.length && (
+                        <span className="inline-block w-1.5 h-3.5 bg-violet-500 ml-0.5 animate-ping"></span>
+                      )}
+                    </div>
                   </div>
                 </div>
 
