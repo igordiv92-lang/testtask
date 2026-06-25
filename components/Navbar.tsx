@@ -4,11 +4,13 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { useI18n } from '@/lib/i18n/I18nContext';
-import { Menu, X, Mail, Sparkles, User, LogOut, CreditCard } from 'lucide-react';
+import { useTheme } from '@/lib/theme/ThemeContext';
+import { Menu, X, Mail, Sparkles, User, LogOut, CreditCard, Sun, Moon } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
   const { locale, setLocale, t } = useI18n();
+  const { theme, toggleTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const renderLanguageToggle = () => (
@@ -30,6 +32,20 @@ export const Navbar: React.FC = () => {
         RU
       </button>
     </div>
+  );
+
+  const renderThemeToggle = () => (
+    <button
+      onClick={toggleTheme}
+      className="p-2 rounded-xl border border-zinc-800 bg-zinc-900/40 hover:bg-zinc-900 text-zinc-400 hover:text-white transition-all cursor-pointer flex items-center justify-center"
+      aria-label="Toggle Theme"
+    >
+      {theme === 'dark' ? (
+        <Sun className="h-4 w-4 text-amber-400" />
+      ) : (
+        <Moon className="h-4 w-4 text-violet-400" />
+      )}
+    </button>
   );
 
   return (
@@ -77,6 +93,9 @@ export const Navbar: React.FC = () => {
             {/* Language Switcher */}
             {renderLanguageToggle()}
 
+            {/* Theme Switcher */}
+            {renderThemeToggle()}
+
             {user ? (
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-900 border border-zinc-800 text-[10px] font-mono">
@@ -118,6 +137,7 @@ export const Navbar: React.FC = () => {
 
           {/* Mobile Menu Button */}
           <div className="flex md:hidden items-center gap-3">
+            {renderThemeToggle()}
             {renderLanguageToggle()}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

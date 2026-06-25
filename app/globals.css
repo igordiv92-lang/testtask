@@ -135,3 +135,105 @@ h1, h2, h3, .font-outfit {
 ::-webkit-scrollbar-thumb:hover {
   background: #27272a;
 }
+
+/* ==========================================
+   STUNNING LIGHT THEME OVERRIDES
+   ========================================== */
+.light {
+  --background: #fcfcfd;
+  --foreground: #09090b;
+  
+  --card: rgba(255, 255, 255, 0.75);
+  --card-foreground: #09090b;
+  
+  --primary: #7c3aed;
+  --primary-foreground: #ffffff;
+  
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+  
+  --border: rgba(0, 0, 0, 0.06);
+  --accent: #f5f3ff;
+  --accent-foreground: #7c3aed;
+  
+  /* Overriding zinc color variables dynamically for Tailwind v4 */
+  --color-zinc-950: #fafafa;
+  --color-zinc-900: #ffffff;
+  --color-zinc-850: #f4f4f5;
+  --color-zinc-800: #e4e4e7;
+  --color-zinc-700: #d4d4d8;
+  --color-zinc-600: #a1a1aa;
+  --color-zinc-500: #71717a;
+  --color-zinc-400: #3f3f46;
+  --color-zinc-300: #27272a;
+  --color-zinc-200: #18181b;
+  --color-zinc-100: #09090b;
+  --color-zinc-50: #030303;
+}
+
+/* Light mode adjustments for custom elements */
+.light .premium-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(244, 244, 245, 0.85) 100%);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+}
+
+.light .glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+}
+
+.light .dot-grid {
+  background-image: radial-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+}
+
+/* Adjust glow blobs to be lighter and more subtle in light mode */
+.light .glow-blob {
+  opacity: 0.12;
+  filter: blur(120px);
+}
+
+/* Text white overrides: ensure headers and non-button texts are dark */
+.light .text-white {
+  color: #09090b !important;
+}
+
+/* Keep button texts, active pill selections, and specific indicators white */
+.light button .text-white,
+.light a.text-white,
+.light .bg-violet-600,
+.light .bg-violet-600 *,
+.light .bg-gradient-to-r,
+.light .bg-gradient-to-r *,
+.light .bg-zinc-900,
+.light .bg-zinc-900 *,
+.light .bg-zinc-950,
+.light .bg-zinc-950 *,
+.light .text-white-pure,
+.light .pro-badge,
+.light .free-badge {
+  color: #ffffff !important;
+}
+
+/* Fix logo colors in light mode (make text dark but Sparkles icon stay white) */
+.light a[href="/"] span {
+  color: #09090b !important;
+}
+.light a[href="/"] .bg-gradient-to-tr * {
+  color: #ffffff !important;
+}
+
+/* Custom scrollbars in light mode */
+.light ::-webkit-scrollbar-track {
+  background: #fafafa;
+}
+.light ::-webkit-scrollbar-thumb {
+  background: #e4e4e7;
+  border: 2px solid #fafafa;
+}
+.light ::-webkit-scrollbar-thumb:hover {
+  background: #d4d4d8;
+}
