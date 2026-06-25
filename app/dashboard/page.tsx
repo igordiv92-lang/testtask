@@ -10,7 +10,7 @@ import {
   Briefcase, Heart, Smile, Star, ArrowUpRight, User, Terminal
 } from 'lucide-react';
 import { toast } from 'sonner';
-import Link from 'next/navigation';
+import Link from 'next/link';
 
 interface SavedDraft {
   id: string;

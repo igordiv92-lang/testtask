@@ -6,6 +6,7 @@ import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { Check, Loader2, Sparkles, CreditCard, Lock, User, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
+import Link from 'next/link';
 
 export default function PricingPage() {
   const { user, upgradePlan } = useAuth();

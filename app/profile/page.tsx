@@ -8,7 +8,7 @@ import {
   User, Mail, Calendar, Shield, CreditCard, 
   LogOut, ArrowRight, Sparkles, CheckCircle2 
 } from 'lucide-react';
-import Link from 'next/navigation';
+import Link from 'next/link';
 import { toast } from 'sonner';
 
 export default function ProfilePage() {

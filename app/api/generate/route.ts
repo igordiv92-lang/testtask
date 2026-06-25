@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { GoogleGenAI } from '@google/generative-ai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 // Mock templates mapping subject/prompt keywords to high-quality templates
 const MOCK_EMAILS: Record<string, Record<string, string>> = {
@@ -35,7 +35,7 @@ export async function POST(req: Request) {
 
     if (apiKey) {
       // Real API generation using Gemini SDK
-      const genAI = new GoogleGenAI({ apiKey });
+      const genAI = new GoogleGenerativeAI(apiKey);
       const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
       
       let systemPrompt = '';

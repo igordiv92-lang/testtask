@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/navigation';
+import Link from 'next/link';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { Menu, X, Mail, Sparkles, User, LogOut, CreditCard } from 'lucide-react';
 
