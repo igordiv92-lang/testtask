@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth/AuthContext';
+import { useI18n } from '@/lib/i18n/I18nContext';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { Sparkles, Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
@@ -10,6 +11,7 @@ import { toast } from 'sonner';
 
 export default function SignupPage() {
   const { signup } = useAuth();
+  const { t } = useI18n();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -19,17 +21,17 @@ export default function SignupPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password || !confirmPassword) {
-      toast.error('Please fill in all fields.');
+      toast.error(t('fillAllFieldsError'));
       return;
     }
 
     if (password.length < 6) {
-      toast.error('Password must be at least 6 characters long.');
+      toast.error(t('passwordMinLengthError'));
       return;
     }
 
     if (password !== confirmPassword) {
-      toast.error('Passwords do not match.');
+      toast.error(t('passwordMismatchError'));
       return;
     }
 
@@ -47,29 +49,29 @@ export default function SignupPage() {
   return (
     <>
       <Navbar />
-      <main className="flex-1 flex items-center justify-center py-16 px-4 relative overflow-hidden bg-zinc-950">
+      <main className="flex-1 flex items-center justify-center py-20 px-4 relative overflow-hidden bg-zinc-950 dot-grid">
         
         {/* Decorative background blobs */}
         <div className="absolute top-1/4 left-1/4 h-[300px] w-[300px] rounded-full bg-violet-600/10 glow-blob -z-10"></div>
         <div className="absolute bottom-1/4 right-1/4 h-[250px] w-[250px] rounded-full bg-indigo-600/10 glow-blob -z-10"></div>
 
         <div className="w-full max-w-md">
-          <div className="glass-panel rounded-3xl p-8 shadow-2xl relative">
+          <div className="premium-card rounded-[32px] p-8 shadow-2xl relative border border-zinc-900">
             
             {/* Header */}
             <div className="text-center mb-8">
-              <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-tr from-violet-600 to-indigo-500 shadow-md shadow-violet-500/20 mb-4">
+              <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-tr from-violet-600 to-indigo-500 shadow-md shadow-violet-500/20 mb-4 animate-bounce">
                 <Sparkles className="h-6 w-6 text-white" />
               </div>
-              <h1 className="text-2xl font-bold text-white mb-2">Create Account</h1>
-              <p className="text-sm text-zinc-400">Get 5 free credits and start generating instantly</p>
+              <h1 className="text-2xl font-bold text-white mb-2 font-display">{t('signupTitle')}</h1>
+              <p className="text-sm text-zinc-400">{t('signupSubtitle')}</p>
             </div>
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
                 <label className="block text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">
-                  Email Address
+                  {t('emailLabel')}
                 </label>
                 <div className="relative">
                   <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -81,14 +83,14 @@ export default function SignupPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@example.com"
-                    className="block w-full rounded-xl bg-zinc-900 border border-zinc-800/80 px-3 py-2.5 pl-10 text-sm text-white placeholder-zinc-500 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500 transition-all"
+                    className="block w-full rounded-xl bg-zinc-950 border border-zinc-900 px-3 py-2.5 pl-10 text-sm text-white placeholder-zinc-650 focus:border-violet-500 focus:outline-none transition-all"
                   />
                 </div>
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">
-                  Password
+                  {t('passwordLabel')}
                 </label>
                 <div className="relative">
                   <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -100,7 +102,7 @@ export default function SignupPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Min. 6 characters"
-                    className="block w-full rounded-xl bg-zinc-900 border border-zinc-800/80 px-3 py-2.5 pl-10 pr-10 text-sm text-white placeholder-zinc-500 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500 transition-all"
+                    className="block w-full rounded-xl bg-zinc-950 border border-zinc-900 px-3 py-2.5 pl-10 pr-10 text-sm text-white placeholder-zinc-650 focus:border-violet-500 focus:outline-none transition-all"
                   />
                   <button
                     type="button"
@@ -114,7 +116,7 @@ export default function SignupPage() {
 
               <div>
                 <label className="block text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">
-                  Confirm Password
+                  {t('confirmPasswordLabel')}
                 </label>
                 <div className="relative">
                   <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -126,7 +128,7 @@ export default function SignupPage() {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="Repeat password"
-                    className="block w-full rounded-xl bg-zinc-900 border border-zinc-800/80 px-3 py-2.5 pl-10 pr-10 text-sm text-white placeholder-zinc-500 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500 transition-all"
+                    className="block w-full rounded-xl bg-zinc-950 border border-zinc-900 px-3 py-2.5 pl-10 pr-10 text-sm text-white placeholder-zinc-650 focus:border-violet-500 focus:outline-none transition-all"
                   />
                 </div>
               </div>
@@ -134,15 +136,15 @@ export default function SignupPage() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full flex items-center justify-center rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-500/20 hover:from-violet-500 hover:to-indigo-500 transition-all hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 disabled:scale-100 disabled:pointer-events-none cursor-pointer"
+                className="w-full flex items-center justify-center rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 py-3.5 text-sm font-semibold text-white shadow-lg hover:from-violet-500 hover:to-indigo-500 transition-all hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
               >
                 {submitting ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Creating Account...
+                    {t('signupCreating')}
                   </>
                 ) : (
-                  'Sign Up'
+                  t('signupBtn')
                 )}
               </button>
             </form>
@@ -150,9 +152,9 @@ export default function SignupPage() {
             {/* Switch Mode Footer */}
             <div className="mt-8 text-center border-t border-zinc-900 pt-6">
               <p className="text-sm text-zinc-400">
-                Already have an account?{' '}
+                {t('alreadyHaveAccount')}{' '}
                 <Link href="/login" className="text-violet-400 hover:text-violet-300 font-semibold transition-colors">
-                  Sign In
+                  {t('signInLink')}
                 </Link>
               </p>
             </div>

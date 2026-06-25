@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useAuth } from '@/lib/auth/AuthContext';
+import { useI18n } from '@/lib/i18n/I18nContext';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { 
@@ -13,20 +14,21 @@ import { toast } from 'sonner';
 
 export default function ProfilePage() {
   const { user, logout } = useAuth();
+  const { locale, t } = useI18n();
 
   const handleLogout = async () => {
     try {
       await logout();
-      toast.success('Successfully logged out.');
+      toast.success(t('logoutSuccess'));
     } catch {
-      toast.error('Failed to log out.');
+      toast.error(locale === 'ru' ? 'Не удалось выйти из системы.' : 'Failed to log out.');
     }
   };
 
   if (!user) {
     return (
       <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center text-zinc-400">
-        <span>Loading account data...</span>
+        <span>{t('loadingAccount')}</span>
       </div>
     );
   }
@@ -46,8 +48,8 @@ export default function ProfilePage() {
 
         <div className="mx-auto max-w-3xl">
           
-          <h1 className="text-3xl font-extrabold text-white mb-2">My Profile</h1>
-          <p className="text-sm text-zinc-400 mb-8">Manage your account credentials, plan status, and credit limits.</p>
+          <h1 className="text-3xl font-extrabold text-white mb-2">{t('myProfile')}</h1>
+          <p className="text-sm text-zinc-400 mb-8">{t('profileSubtitle')}</p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
             
@@ -65,7 +67,7 @@ export default function ProfilePage() {
               {/* Status Badge */}
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-xs font-semibold text-zinc-300 uppercase mb-6">
                 <span className={`h-1.5 w-1.5 rounded-full ${user.plan === 'PRO' ? 'bg-emerald-500' : 'bg-amber-500'}`}></span>
-                {user.plan} account
+                {user.plan === 'PRO' ? t('proAccount') : t('freeAccount')}
               </div>
 
               <button
@@ -73,7 +75,7 @@ export default function ProfilePage() {
                 className="w-full flex items-center justify-center gap-2 rounded-xl border border-zinc-800 hover:border-zinc-700 py-2.5 text-xs font-semibold text-zinc-400 hover:text-white hover:bg-zinc-900 transition-all cursor-pointer"
               >
                 <LogOut className="h-4 w-4" />
-                Sign Out
+                {t('navSignOut')}
               </button>
 
             </div>
@@ -83,12 +85,14 @@ export default function ProfilePage() {
               
               {/* Card: Account details list */}
               <div className="glass-panel border border-zinc-900 rounded-3xl p-6 space-y-4">
-                <h4 className="text-sm font-bold text-white border-b border-zinc-900 pb-3">Account Information</h4>
+                <h4 className="text-sm font-bold text-white border-b border-zinc-900 pb-3">
+                  {locale === 'ru' ? 'Информация об аккаунте' : 'Account Information'}
+                </h4>
                 
                 <div className="flex items-center gap-3 text-sm">
                   <Mail className="h-4 w-4 text-zinc-500" />
                   <div className="flex-1 flex justify-between">
-                    <span className="text-zinc-500">Email Address</span>
+                    <span className="text-zinc-500">{t('emailLabel')}</span>
                     <span className="text-zinc-300 font-semibold">{user.email}</span>
                   </div>
                 </div>
@@ -96,17 +100,19 @@ export default function ProfilePage() {
                 <div className="flex items-center gap-3 text-sm">
                   <Calendar className="h-4 w-4 text-zinc-500" />
                   <div className="flex-1 flex justify-between">
-                    <span className="text-zinc-500">Joined Date</span>
-                    <span className="text-zinc-300 font-semibold">June 25, 2026</span>
+                    <span className="text-zinc-500">{t('joinedDate')}</span>
+                    <span className="text-zinc-300 font-semibold">
+                      {locale === 'ru' ? '25 июня 2026 г.' : 'June 25, 2026'}
+                    </span>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3 text-sm">
                   <Shield className="h-4 w-4 text-zinc-500" />
                   <div className="flex-1 flex justify-between">
-                    <span className="text-zinc-500">Security Tier</span>
+                    <span className="text-zinc-500">{t('securityTier')}</span>
                     <span className="text-zinc-300 font-semibold flex items-center gap-1">
-                      Standard SSL
+                      {t('standardSsl')}
                       <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
                     </span>
                   </div>
@@ -115,21 +121,27 @@ export default function ProfilePage() {
 
               {/* Card: Credits tracker */}
               <div className="glass-panel border border-zinc-900 rounded-3xl p-6">
-                <h4 className="text-sm font-bold text-white mb-4">Credit Usage</h4>
+                <h4 className="text-sm font-bold text-white mb-4">
+                  {locale === 'ru' ? 'Использование кредитов' : 'Credit Usage'}
+                </h4>
                 
                 {user.plan === 'PRO' ? (
                   <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl p-4 flex items-center gap-3">
                     <Sparkles className="h-6 w-6 text-violet-400" />
                     <div>
-                      <h5 className="text-sm font-bold text-white">Unlimited Generation Access</h5>
-                      <p className="text-xs text-zinc-500 mt-0.5">Your Pro plan grants you infinite AI generations with no monthly caps.</p>
+                      <h5 className="text-sm font-bold text-white">
+                        {locale === 'ru' ? 'Безлимитный доступ к генерации' : 'Unlimited Generation Access'}
+                      </h5>
+                      <p className="text-xs text-zinc-500 mt-0.5">{t('usageProDesc')}</p>
                     </div>
                   </div>
                 ) : (
                   <div className="space-y-4">
                     <div className="flex justify-between items-end text-xs font-semibold uppercase tracking-wider">
-                      <span className="text-zinc-500">Generations Used</span>
-                      <span className="text-zinc-300">{user.creditsUsed} / {user.creditsMax} credits</span>
+                      <span className="text-zinc-500">{t('usageUsed')}</span>
+                      <span className="text-zinc-300">
+                        {locale === 'ru' ? `${user.creditsUsed} / ${user.creditsMax} кредитов` : `${user.creditsUsed} / ${user.creditsMax} credits`}
+                      </span>
                     </div>
 
                     {/* Progress Bar wrapper */}
@@ -141,7 +153,7 @@ export default function ProfilePage() {
                     </div>
 
                     <p className="text-xs text-zinc-500 leading-relaxed">
-                      You have {creditsLeft} free credits left. Upgrade to the Pro plan for unlimited generations, all tones, and maximum priority speed.
+                      {t('usageDesc', { credits: creditsLeft })}
                     </p>
 
                     {creditsLeft <= 2 && (
@@ -149,7 +161,7 @@ export default function ProfilePage() {
                         href="/pricing"
                         className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-violet-600 hover:bg-violet-500 text-xs font-bold text-white py-3 shadow-md transition-all"
                       >
-                        Upgrade to Unlimited
+                        {t('upgradeUnlimitedBtn')}
                         <ArrowRight className="h-4 w-4" />
                       </Link>
                     )}

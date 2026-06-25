@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth/AuthContext';
+import { useI18n } from '@/lib/i18n/I18nContext';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { 
@@ -10,25 +11,34 @@ import {
   MessageSquare, ChevronDown, CheckCircle2, ChevronRight 
 } from 'lucide-react';
 
-const TONES_DEMO = [
+const TONES_DEMO_EN = [
   { name: 'Professional', text: "Dear Team,\n\nI am writing to formally request a status update on the project deliverables. Your prompt attention to this matter is highly appreciated.\n\nBest regards,\nAlex" },
   { name: 'Casual', text: "Hey guys!\n\nJust wanted to check in and see how the project is coming along. Let me know when you get a sec!\n\nThanks,\nAlex" },
   { name: 'Bold', text: "Team,\n\nWe need the project updates now. Let's align immediately to hit our targets and push this over the finish line.\n\nBest,\nAlex" }
 ];
 
+const TONES_DEMO_RU = [
+  { name: 'Professional', text: "Уважаемая команда,\n\nЯ пишу, чтобы официально запросить статус выполнения текущих задач по проекту. Буду признателен за оперативную обратную связь.\n\nС уважением,\nАлександр" },
+  { name: 'Casual', text: "Привет, ребята!\n\nХотел быстро узнать, как там продвигаются дела по проекту? Дайте знать, как освободитесь.\n\nСпасибо,\nСаша" },
+  { name: 'Bold', text: "Команда,\n\nНам срочно нужно согласовать статус задач. Давайте созвонимся прямо сейчас, чтобы не сорвать дедлайны.\n\nС уважением,\nАлександр" }
+];
+
 export default function LandingPage() {
   const { user } = useAuth();
+  const { locale, t } = useI18n();
   const [activeToneIndex, setActiveToneIndex] = useState(0);
   const [demoText, setDemoText] = useState('');
   const [typingIndex, setTypingIndex] = useState(0);
   const [faqOpen, setFaqOpen] = useState<number | null>(null);
+
+  const TONES_DEMO = locale === 'ru' ? TONES_DEMO_RU : TONES_DEMO_EN;
 
   // Typewriter effect for Landing Page Demo
   useEffect(() => {
     const fullText = TONES_DEMO[activeToneIndex].text;
     setDemoText('');
     setTypingIndex(0);
-  }, [activeToneIndex]);
+  }, [activeToneIndex, locale]);
 
   useEffect(() => {
     const fullText = TONES_DEMO[activeToneIndex].text;
@@ -39,13 +49,13 @@ export default function LandingPage() {
       }, 10);
       return () => clearTimeout(timeout);
     }
-  }, [typingIndex, activeToneIndex]);
+  }, [typingIndex, activeToneIndex, locale]);
 
   const toggleFaq = (index: number) => {
     setFaqOpen(faqOpen === index ? null : index);
   };
 
-  const faqItems = [
+  const faqItemsEN = [
     {
       q: "How does VibeMail AI work?",
       a: "VibeMail AI uses advanced language models (specifically Gemini 1.5/2.5) to parse your email topics and refine them into highly-effective drafts based on your selected tone, intent, and length preferences."
@@ -64,12 +74,33 @@ export default function LandingPage() {
     }
   ];
 
+  const faqItemsRU = [
+    {
+      q: "Как работает VibeMail AI?",
+      a: "VibeMail AI использует передовые языковые модели (в частности, Gemini 1.5/2.5) для анализа тем писем и генерации готовых текстов на основе выбранного тона, цели и длины."
+    },
+    {
+      q: "Могу ли я попробовать VibeMail AI бесплатно?",
+      a: "Да! Каждый новый аккаунт получает 5 бесплатных кредитов для тестирования. Кредитная карта не требуется. Вы можете перейти на тариф Pro в любое время."
+    },
+    {
+      q: "Какие тона доступны для писем?",
+      a: "Мы поддерживаем профессиональный, дружелюбный, строгий, убеждающий, извиняющийся и юмористический тона. Вы также можете настроить длину (короткое, среднее, длинное) под любой формат."
+    },
+    {
+      q: "Могу ли я использовать свой API-ключ?",
+      a: "Приложение готово к работе сразу. Разработчики могут настроить ключ `GEMINI_API_KEY` в окружении, чтобы делать запросы напрямую к реальным моделям ИИ."
+    }
+  ];
+
+  const faqItems = locale === 'ru' ? faqItemsRU : faqItemsEN;
+
   return (
     <>
       <Navbar />
       
       {/* Hero Section */}
-      <section className="relative overflow-hidden pt-24 pb-20 lg:pt-36 lg:pb-32 bg-zinc-950 dot-grid">
+      <section className="relative overflow-hidden pt-28 pb-20 lg:pt-36 lg:pb-32 bg-zinc-950 dot-grid">
         
         {/* Glow blobs */}
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 h-[450px] w-[450px] rounded-full bg-violet-600/10 glow-blob -z-10"></div>
@@ -84,16 +115,16 @@ export default function LandingPage() {
               {/* Badge announcement */}
               <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-900/60 border border-zinc-800/80 text-xs font-semibold text-violet-400 mb-8 animate-pulse backdrop-blur">
                 <Zap className="h-3.5 w-3.5 fill-violet-400" />
-                <span className="font-display">Next-Gen AI Email Generator</span>
+                <span className="font-display">{t('heroBadge')}</span>
               </div>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight mb-6 font-display">
-                Write emails <span className="gradient-text">10x faster</span>. <br />
-                Keep your vibe.
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-outfit font-extrabold tracking-tight text-white leading-tight mb-6">
+                {t('heroTitlePrefix')} <span className="gradient-text">{t('heroTitleHighlight')}</span>. <br />
+                {t('heroTitleSuffix')}
               </h1>
               
               <p className="text-lg text-zinc-400 max-w-xl mb-8 leading-relaxed">
-                Stop staring at blank drafts. Generate professionally structured, tone-adjusted emails in seconds. Save hours of editing and increase response rates.
+                {t('heroSubtitle')}
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
@@ -101,14 +132,14 @@ export default function LandingPage() {
                   href={user ? "/dashboard" : "/signup"}
                   className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-650 px-8 py-4 text-base font-semibold text-white shadow-xl shadow-violet-500/25 hover:from-violet-500 hover:to-indigo-550 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
                 >
-                  {user ? "Go to Dashboard" : "Start Writing Free"}
+                  {user ? t('heroCtaDashboard') : t('heroCtaStart')}
                   <ArrowRight className="h-5 w-5" />
                 </Link>
                 <Link
                   href="/pricing"
                   className="inline-flex items-center justify-center rounded-2xl border border-zinc-850 bg-zinc-900/40 backdrop-blur-sm px-8 py-4 text-base font-semibold text-zinc-300 hover:text-white hover:bg-zinc-900 hover:border-zinc-700 transition-all"
                 >
-                  View Pricing
+                  {t('heroCtaPricing')}
                 </Link>
               </div>
 
@@ -116,15 +147,15 @@ export default function LandingPage() {
               <div className="grid grid-cols-3 gap-6 sm:gap-10 border-t border-zinc-900 mt-16 pt-10 w-full">
                 <div>
                   <p className="text-2xl sm:text-3xl font-extrabold text-white font-display">99%</p>
-                  <p className="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider mt-1">Accuracy</p>
+                  <p className="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider mt-1">{t('metricAccuracy')}</p>
                 </div>
                 <div>
                   <p className="text-2xl sm:text-3xl font-extrabold text-white font-display">2.5s</p>
-                  <p className="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider mt-1">Generation</p>
+                  <p className="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider mt-1">{t('metricGeneration')}</p>
                 </div>
                 <div>
                   <p className="text-2xl sm:text-3xl font-extrabold text-white font-display">100k+</p>
-                  <p className="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider mt-1">Emails Written</p>
+                  <p className="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider mt-1">{t('metricWritten')}</p>
                 </div>
               </div>
 
@@ -142,7 +173,7 @@ export default function LandingPage() {
                       <span className="h-3 w-3 rounded-full bg-yellow-500/80"></span>
                       <span className="h-3 w-3 rounded-full bg-green-500/80"></span>
                     </div>
-                    <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest font-mono">Mail Client Preview</span>
+                    <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest font-mono">{t('livePreviewTitle')}</span>
                   </div>
 
                   {/* Tone Selectors */}
@@ -164,17 +195,17 @@ export default function LandingPage() {
 
                   {/* Simulated Input Prompt */}
                   <div className="mb-4 text-xs space-y-1.5">
-                    <div className="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider">Input Prompt:</div>
+                    <div className="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider">{t('livePreviewPromptLabel')}</div>
                     <div className="bg-zinc-950/60 border border-zinc-900 px-3 py-2.5 rounded-xl text-zinc-300">
-                      "Ask Alexander for a status update on our deliverables..."
+                      {locale === 'ru' ? '"Попроси Александра прислать отчет по проекту и дедлайнам..."' : '"Ask Alexander for a status update on our deliverables..."'}
                     </div>
                   </div>
 
                   {/* Output Screen (Gmail-like) */}
                   <div className="space-y-2.5 text-xs">
                     <div className="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider flex justify-between">
-                      <span>Generated Draft:</span>
-                      <span className="text-violet-400 animate-pulse font-mono">AI is typing...</span>
+                      <span>{t('livePreviewDraftLabel')}</span>
+                      <span className="text-violet-400 animate-pulse font-mono">{t('livePreviewTyping')}</span>
                     </div>
 
                     <div className="bg-zinc-950/80 border border-zinc-900 rounded-2xl p-4 space-y-3 shadow-inner">
@@ -189,7 +220,9 @@ export default function LandingPage() {
                         </div>
                         <div className="flex items-center gap-2 text-zinc-500">
                           <span className="w-12">Subject:</span>
-                          <span className="font-semibold text-zinc-300 text-[10px]">Status Update: Project Deliverables</span>
+                          <span className="font-semibold text-zinc-300 text-[10px]">
+                            {locale === 'ru' ? 'Статус задач по проекту' : 'Status Update: Project Deliverables'}
+                          </span>
                         </div>
                       </div>
                       
@@ -214,9 +247,9 @@ export default function LandingPage() {
       <section className="py-24 border-t border-zinc-900 bg-zinc-950/40 dot-grid relative">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-20">
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 font-display">Supercharge Your Inbox</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 font-display">{t('featureTitle')}</h2>
             <p className="text-zinc-400 max-w-xl mx-auto text-sm sm:text-base leading-relaxed">
-              Say goodbye to writer's block. VibeMail AI equips you with everything you need to communicate effectively.
+              {t('featureSubtitle')}
             </p>
           </div>
 
@@ -227,9 +260,9 @@ export default function LandingPage() {
               <div className="h-12 w-12 rounded-2xl bg-violet-600/10 border border-violet-500/20 flex items-center justify-center text-violet-400 mb-6">
                 <Zap className="h-6 w-6" />
               </div>
-              <h3 className="text-lg font-bold text-white mb-3 font-display">Instant Generation</h3>
+              <h3 className="text-lg font-bold text-white mb-3 font-display">{t('feat1Title')}</h3>
               <p className="text-sm text-zinc-400 leading-relaxed">
-                Generate high-quality emails matching your goals in under 3 seconds. Type a short description, and the AI does the rest.
+                {t('feat1Text')}
               </p>
             </div>
 
@@ -238,9 +271,9 @@ export default function LandingPage() {
               <div className="h-12 w-12 rounded-2xl bg-violet-600/10 border border-violet-500/20 flex items-center justify-center text-violet-400 mb-6">
                 <MessageSquare className="h-6 w-6" />
               </div>
-              <h3 className="text-lg font-bold text-white mb-3 font-display">Adaptive Tone Shifts</h3>
+              <h3 className="text-lg font-bold text-white mb-3 font-display">{t('feat2Title')}</h3>
               <p className="text-sm text-zinc-400 leading-relaxed">
-                Shift the email's personality in one click. Choose from Casual, Professional, Bold, or Apologetic tones to match the exact context.
+                {t('feat2Text')}
               </p>
             </div>
 
@@ -249,9 +282,9 @@ export default function LandingPage() {
               <div className="h-12 w-12 rounded-2xl bg-violet-600/10 border border-violet-500/20 flex items-center justify-center text-violet-400 mb-6">
                 <Shield className="h-6 w-6" />
               </div>
-              <h3 className="text-lg font-bold text-white mb-3 font-display">Private & Secure</h3>
+              <h3 className="text-lg font-bold text-white mb-3 font-display">{t('feat3Title')}</h3>
               <p className="text-sm text-zinc-400 leading-relaxed">
-                Your data is secure. Your email content is never stored on our database or used to train public LLM models.
+                {t('feat3Text')}
               </p>
             </div>
 
@@ -263,8 +296,8 @@ export default function LandingPage() {
       <section className="py-24 border-t border-zinc-900 bg-zinc-950 dot-grid">
         <div className="mx-auto max-w-3xl px-4 sm:px-6">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-white mb-4 font-display">Frequently Asked Questions</h2>
-            <p className="text-zinc-400 text-sm">Everything you need to know about VibeMail AI.</p>
+            <h2 className="text-3xl font-bold text-white mb-4 font-display">{t('faqTitle')}</h2>
+            <p className="text-zinc-400 text-sm">{t('faqSubtitle')}</p>
           </div>
 
           <div className="space-y-4">
@@ -308,16 +341,16 @@ export default function LandingPage() {
             <div className="absolute -top-10 -left-10 h-40 w-40 rounded-full bg-violet-600/10 glow-blob"></div>
             <div className="absolute -bottom-10 -right-10 h-40 w-40 rounded-full bg-indigo-600/10 glow-blob"></div>
 
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4 font-display">Ready to double your reply rates?</h2>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4 font-display">{t('ctaTitle')}</h2>
             <p className="text-zinc-400 max-w-md mx-auto text-sm sm:text-base mb-8 leading-relaxed">
-              Sign up today and get 5 free generation credits. Start matching the exact vibe you need.
+              {t('ctaSubtitle')}
             </p>
 
             <Link
               href={user ? "/dashboard" : "/signup"}
               className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-650 px-8 py-4.5 text-base font-semibold text-white shadow-lg shadow-violet-500/25 hover:from-violet-500 hover:to-indigo-550 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
             >
-              Get Started For Free
+              {t('ctaBtn')}
               <ArrowRight className="h-5 w-5" />
             </Link>
           </div>
