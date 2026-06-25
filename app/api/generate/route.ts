@@ -25,10 +25,10 @@ const MOCK_EMAILS: Record<string, Record<string, string>> = {
 
 export async function POST(req: Request) {
   try {
-    const { prompt, tone, length } = await req.json();
+    const { prompt, tone, length, refinePrompt, previousDraft } = await req.json();
 
-    if (!prompt) {
-      return NextResponse.json({ error: 'Prompt is required' }, { status: 400 });
+    if (!prompt && !refinePrompt) {
+      return NextResponse.json({ error: 'Prompt or refine instruction is required' }, { status: 400 });
     }
 
     const apiKey = process.env.GEMINI_API_KEY;
@@ -38,20 +38,63 @@ export async function POST(req: Request) {
       const genAI = new GoogleGenAI({ apiKey });
       const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
       
-      const systemPrompt = `You are a professional email writing assistant. Write an email draft based on the user's prompt.
+      let systemPrompt = '';
+      let userQuery = '';
+
+      if (refinePrompt && previousDraft) {
+        systemPrompt = `You are a professional email writing assistant. Refine or modify the provided email draft based on the user's instructions.
+Keep the existing formatting and tone context where possible.
+Do NOT output any markdown formatting, preambles, or conversational commentary. Just output the refined email subject line (starting with 'Subject:') and the body.`;
+        userQuery = `Previous Draft:\n${previousDraft}\n\nRefinement Instruction: ${refinePrompt}`;
+      } else {
+        systemPrompt = `You are a professional email writing assistant. Write an email draft based on the user's prompt.
 Tone: ${tone || 'Professional'}
 Length constraint: ${length || 'Medium'} (short is under 100 words, medium is 100-250 words, long is 250+ words).
 Do NOT output any markdown formatting, preambles, or conversational commentary. Just output the email subject line (starting with 'Subject:') and the body.`;
+        userQuery = `Prompt: ${prompt}\n\nSystem Instructions:\n${systemPrompt}`;
+      }
 
       const response = await model.generateContent({
-        contents: [{ role: 'user', parts: [{ text: `Prompt: ${prompt}\n\nSystem Instructions:\n${systemPrompt}` }] }],
+        contents: [{ role: 'user', parts: [{ text: userQuery + `\n\nSystem Instructions:\n${systemPrompt}` }] }],
       });
 
       const text = response.response.text();
       return NextResponse.json({ result: text });
     } else {
-      // Fallback: Custom Mock Template Generator
+      // Fallback: Custom Mock Template Generator / Refiner
       await new Promise((resolve) => setTimeout(resolve, 1200)); // synthetic latency
+
+      if (refinePrompt && previousDraft) {
+        // Simulating refinement adjustments in mock mode
+        const lines = previousDraft.split('\n');
+        let refinedText = previousDraft;
+        const refineLower = refinePrompt.toLowerCase();
+
+        if (refineLower.includes('urgent') || refineLower.includes('fast')) {
+          refinedText = refinedText.replace(
+            /(Sincerely|Best regards|Best|Warm regards),/i,
+            `This is highly time-sensitive, so I look forward to hearing from you soon.\n\n$1,`
+          );
+        } else if (refineLower.includes('contract') || refineLower.includes('document')) {
+          refinedText = refinedText.replace(
+            /(Sincerely|Best regards|Best|Warm regards),/i,
+            `I have attached the necessary document details for your review.\n\n$1,`
+          );
+        } else if (refineLower.includes('thanks') || refineLower.includes('appreciate')) {
+          refinedText = refinedText.replace(
+            /Dear (.*?),\n\n/i,
+            `Dear $1,\n\nThank you for your time. `
+          );
+        } else {
+          // generic fallback refinement injection
+          refinedText = refinedText.replace(
+            /(Sincerely|Best regards|Best|Warm regards),/i,
+            `Additionally, please note that we are happy to customize this to fit your requirements.\n\n$1,`
+          );
+        }
+
+        return NextResponse.json({ result: refinedText });
+      }
 
       const promptLower = prompt.toLowerCase();
       let category = 'default';
@@ -67,7 +110,6 @@ Do NOT output any markdown formatting, preambles, or conversational commentary. 
       // Adjust length text constraint simulation
       if (length === 'Short') {
         const lines = emailText.split('\n');
-        // keep subject + first paragraph
         emailText = lines.slice(0, 5).join('\n') + `\n\nBest regards,\n[Your Name]`;
       } else if (length === 'Long') {
         const bodyInsert = `\n\nFurthermore, we should establish clear milestones and review progress iteratively to maximize our output efficiency and address any unforeseen issues proactively.`;
