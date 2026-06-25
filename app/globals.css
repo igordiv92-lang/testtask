@@ -1,19 +1,22 @@
+/* Google Fonts Import for Premium Typography */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
 @import "tailwindcss";
 
 :root {
-  --background: #09090b;
+  --background: #030303;
   --foreground: #f4f4f5;
   
-  --card: #18181b;
+  --card: rgba(10, 10, 12, 0.7);
   --card-foreground: #f4f4f5;
   
   --primary: #8b5cf6;
   --primary-foreground: #ffffff;
   
-  --muted: #27272a;
+  --muted: #18181b;
   --muted-foreground: #a1a1aa;
   
-  --border: #27272a;
+  --border: rgba(255, 255, 255, 0.08);
   --accent: #2e1065;
   --accent-foreground: #f4f4f5;
 }
@@ -31,35 +34,67 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   
-  --font-sans: var(--font-geist-sans), Inter, sans-serif;
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
+  --font-display: 'Outfit', sans-serif;
   --font-mono: var(--font-geist-mono), monospace;
 }
 
-/* Base resets & animations */
+/* Premium dark baseline */
 body {
   background-color: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
   overflow-x: hidden;
+  position: relative;
 }
 
-/* Glassmorphism utility */
-.glass-panel {
-  background: rgba(24, 24, 27, 0.65);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+/* Dotted grid background overlay */
+.dot-grid {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 
-.glass-panel-glow:hover {
-  border-color: rgba(139, 92, 246, 0.3);
-  box-shadow: 0 0 25px rgba(139, 92, 246, 0.15);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+/* Premium card with subtle metallic gradient and backdrop blur */
+.premium-card {
+  background: linear-gradient(135deg, rgba(18, 18, 24, 0.8) 0%, rgba(10, 10, 12, 0.8) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+}
+
+.premium-card-glow {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.premium-card-glow:hover {
+  transform: translateY(-4px);
+  border-color: rgba(139, 92, 246, 0.35);
+  box-shadow: 0 10px 40px rgba(139, 92, 246, 0.12), 
+              0 0 0 1px rgba(139, 92, 246, 0.2) inset;
+}
+
+/* Gradient borders using mask properties (Stripe/Linear style) */
+.gradient-border-wrapper {
+  position: relative;
+  border-radius: 24px;
+  padding: 1px;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05));
+  transition: background 0.3s ease;
+}
+
+.gradient-border-wrapper:hover {
+  background: linear-gradient(135deg, rgba(167, 139, 250, 0.6) 0%, rgba(139, 92, 246, 0.2) 50%, rgba(236, 72, 153, 0.6) 100%);
+}
+
+/* Typography styles */
+h1, h2, h3, .font-outfit {
+  font-family: var(--font-display);
 }
 
 /* Gradient text */
 .gradient-text {
-  background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 50%, #6d28d9 100%);
+  background: linear-gradient(135deg, #c084fc 0%, #a78bfa 50%, #818cf8 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -68,21 +103,21 @@ body {
 @keyframes pulseGlow {
   0%, 100% {
     transform: translate(0px, 0px) scale(1);
-    opacity: 0.2;
+    opacity: 0.15;
   }
   33% {
-    transform: translate(30px, -50px) scale(1.1);
-    opacity: 0.35;
+    transform: translate(40px, -60px) scale(1.15);
+    opacity: 0.25;
   }
   66% {
-    transform: translate(-20px, 20px) scale(0.9);
-    opacity: 0.25;
+    transform: translate(-30px, 30px) scale(0.9);
+    opacity: 0.2;
   }
 }
 
 .glow-blob {
-  filter: blur(80px);
-  animation: pulseGlow 12s infinite alternate ease-in-out;
+  filter: blur(100px);
+  animation: pulseGlow 15s infinite alternate ease-in-out;
 }
 
 /* Custom Scrollbar */
@@ -90,12 +125,13 @@ body {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #09090b;
+  background: #030303;
 }
 ::-webkit-scrollbar-thumb {
-  background: #27272a;
+  background: #18181b;
   border-radius: 4px;
+  border: 2px solid #030303;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3f3f46;
+  background: #27272a;
 }

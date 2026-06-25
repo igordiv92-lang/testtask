@@ -10,8 +10,8 @@ export const Navbar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <nav className="sticky top-0 z-50 w-full glass-panel border-b border-zinc-800/80 bg-zinc-950/70 backdrop-blur-md">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div className="sticky top-4 z-50 w-full px-4 sm:px-6 lg:px-8">
+      <nav className="mx-auto max-w-7xl premium-card bg-zinc-950/65 backdrop-blur-md rounded-2xl shadow-lg border border-zinc-800/80">
         <div className="flex h-16 items-center justify-between">
           
           {/* Logo */}
@@ -98,7 +98,6 @@ export const Navbar: React.FC = () => {
           </div>
 
         </div>
-      </div>
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
@@ -185,6 +184,7 @@ export const Navbar: React.FC = () => {
           </div>
         </div>
       )}
-    </nav>
+      </nav>
+    </div>
   );
 };
